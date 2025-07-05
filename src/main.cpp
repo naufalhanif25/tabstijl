@@ -304,6 +304,39 @@ pair<size_t, string> align_text(
     }
 }
 
+/**
+ * @brief Clears all Unicode border characters in a given tab_border structure.
+ * 
+ * This function deletes all string values used to define the boundary component to minimise memory usage.
+ * 
+ * The structure includes definitions for the top, separator (between header and body),
+ * and bottom border lines, as well as the vertical line between columns.
+ * 
+ * @param tab_border_struct A reference to the tab_border struct containing border characters.
+ */
+void clear_tab_border(tab_border &tab_border_struct) {
+    // Clear bottom border characters
+    tab_border_struct.bottom.fill_char_unicode.clear();
+    tab_border_struct.bottom.left_char_unicode.clear();
+    tab_border_struct.bottom.mid_char_unicode.clear();
+    tab_border_struct.bottom.right_char_unicode.clear();
+
+    // Clear separator line characters (between header and body)
+    tab_border_struct.separator.fill_char_unicode.clear();
+    tab_border_struct.separator.left_char_unicode.clear();
+    tab_border_struct.separator.mid_char_unicode.clear();
+    tab_border_struct.separator.right_char_unicode.clear();
+
+    // Clear top border characters
+    tab_border_struct.top.fill_char_unicode.clear();
+    tab_border_struct.top.left_char_unicode.clear();
+    tab_border_struct.top.mid_char_unicode.clear();
+    tab_border_struct.top.right_char_unicode.clear();
+
+    // Clear vertical line character (used between cells in rows)
+    tab_border_struct.vertical_line.clear();
+}
+
 int main(
     int argc, 
     char *argv[]
@@ -521,14 +554,12 @@ int main(
         // Disables table borders entirely
         if (option == "-b" || option == "--borderless") {
             use_border = false;
+
+            continue;
         }
         // Handle configuration of --border-style option
         // Sets table border style configuration
         else if (starts_with(option, "--border-style")) {
-            // Cleanup the memory
-            PROGRAM_LOGO.clear();
-            HELP_MESSAGE.clear();
-
             size_t equal_sign_pos = option.find("=");
             string option_key = option;
 
@@ -545,6 +576,8 @@ int main(
 
                     return 1;  // Exit with error
                 }
+
+                continue;
             }
             else {
                 // Handle missing '=' and value
@@ -558,16 +591,14 @@ int main(
         // Disables column separation
         else if (option == "-f" || option == "--fusion") {
             use_separator = false;
+
+            continue;
         }
         // Handle configuration of --hdata option
         // Sets the header data
         else if (
             starts_with(option, "--hdata")
         ) {
-            // Cleanup the memory
-            PROGRAM_LOGO.clear();
-            HELP_MESSAGE.clear();
-
             size_t equal_sign_pos = option.find("=");
             string option_key = option;
 
@@ -590,6 +621,8 @@ int main(
 
                     return 1;  // Exit with error
                 }
+
+                continue;
             }
             else {
                 // Handle missing '=' and value
@@ -606,10 +639,6 @@ int main(
             starts_with(option, "--btext-align") || 
             starts_with(option, "--text-align")
         ) {
-            // Cleanup the memory
-            PROGRAM_LOGO.clear();
-            HELP_MESSAGE.clear();
-
             size_t equal_sign_pos = option.find("=");
             string option_key = option;
 
@@ -641,6 +670,8 @@ int main(
                     header_text_align = temp_text_align;
                     body_text_align = temp_text_align;
                 }
+
+                continue;
             }
             else {
                 // Handle missing '=' and value
@@ -657,10 +688,6 @@ int main(
             starts_with(option, "--bbg-color") || 
             starts_with(option, "--bg-color")
         ) {
-            // Cleanup the memory
-            PROGRAM_LOGO.clear();
-            HELP_MESSAGE.clear();
-
             size_t equal_sign_pos = option.find("=");
             string option_key = option;
 
@@ -697,6 +724,8 @@ int main(
                     header_bg_color = temp_bg_color;
                     body_bg_color = temp_bg_color;
                 }
+
+                continue;
             }
             else {
                 // Handle missing '=' and value
@@ -713,10 +742,6 @@ int main(
             starts_with(option, "--btext-style") ||
             starts_with(option, "--text-style")
         ) {
-            // Cleanup the memory
-            PROGRAM_LOGO.clear();
-            HELP_MESSAGE.clear();
-
             size_t equal_sign_pos = option.find("=");
             string option_key = option;
 
@@ -750,6 +775,8 @@ int main(
                     header_text_style = temp_text_style;
                     body_text_style = temp_text_style;
                 }
+
+                continue;
             }
             else {
                 // Handle missing '=' and value
@@ -776,19 +803,11 @@ int main(
             cout << endl << PROGRAM_LOGO << endl;
             cout << HELP_MESSAGE;
 
-            // Cleanup the memory
-            PROGRAM_LOGO.clear();
-            HELP_MESSAGE.clear();
-
             return 0;
         }
         // Handle configuration of --padding option
         // Sets the number of spaces between table columns
         else if (starts_with(option, "--padding")) {
-            // Cleanup the memory
-            PROGRAM_LOGO.clear();
-            HELP_MESSAGE.clear();
-
             size_t equal_sign_pos = option.find("=");
             string option_key = option;
 
@@ -807,6 +826,8 @@ int main(
                     }
 
                     col_padding = option_value;
+
+                    continue;
                 }
                 catch (const invalid_argument &error_message) {
                     // Handle invalid argument
@@ -834,10 +855,6 @@ int main(
         // Handle configuration of --separator option
         // Sets the character used to separate columns
         else if (starts_with(option, "--separator")) {
-            // Cleanup the memory
-            PROGRAM_LOGO.clear();
-            HELP_MESSAGE.clear();
-
             size_t equal_sign_pos = option.find("=");
             string option_key = option;
 
@@ -858,6 +875,8 @@ int main(
 
                     return 1;  // Exit with error
                 }
+
+                continue;
             }
             else {
                 // Handle missing '=' and value
@@ -872,6 +891,8 @@ int main(
         else if (option == "-s" || option == "--simplify") {
             headerless = true;
             exclude_first_line = headerless;
+
+            continue;
         }
         // Handle configuration of --tab-color, --btext-color, --htext-color, or --text-color options
         // Sets the text color configuration for various parts of the table
@@ -881,10 +902,6 @@ int main(
             starts_with(option, "--htext-color") || 
             starts_with(option, "--text-color")
         ) {
-            // Cleanup the memory
-            PROGRAM_LOGO.clear();
-            HELP_MESSAGE.clear();
-
             size_t equal_sign_pos = option.find("=");
             string option_key = option;
 
@@ -924,6 +941,8 @@ int main(
                     header_text_color = temp_text_color;
                     body_text_color = temp_text_color;
                 }
+
+                continue;
             }
             else {
                 // Handle missing '=' and value
@@ -936,10 +955,6 @@ int main(
         // Handle configuration of --theme option
         // Applies predefined formatting presets based on selected theme name
         else if (starts_with(option, "--theme")) {
-            // Cleanup the memory
-            PROGRAM_LOGO.clear();
-            HELP_MESSAGE.clear();
-
             size_t equal_sign_pos = option.find("=");
             string option_key = option;
 
@@ -1002,6 +1017,8 @@ int main(
 
                     return 1;  // Exit with error
                 }
+
+                continue;
             }
             else {
                 // Handle missing '=' and value
@@ -1014,20 +1031,12 @@ int main(
         // Handle configuration of -v or --version options
         // Prints the predefined version of the program
         else if (option == "-v" || option == "--version") {
-            // Cleanup the memory
-            PROGRAM_LOGO.clear();
-            HELP_MESSAGE.clear();
-
             cout << PROGRAM_NAME << " " << PROGRAM_VERSION << endl;
 
             return 0;
         }
         // Any unknown or invalid argument results in an error
         else {
-            // Cleanup the memory
-            PROGRAM_LOGO.clear();
-            HELP_MESSAGE.clear();
-
             cerr << "Error: The '" << option << "' option is not available" << endl << endl;
             cerr << "Type '-h' or '--help' to show the help message" << endl;
 
@@ -1036,6 +1045,10 @@ int main(
     }
 
     // Cleanup the memory
+    clear_tab_border(heavy_border_style);
+    clear_tab_border(double_border_style);
+    clear_tab_border(star_border_style);
+
     PROGRAM_LOGO.clear();
     HELP_MESSAGE.clear();
 
@@ -1126,12 +1139,15 @@ int main(
     // --------------------------------------------------
 
     // Sets the header data
-    if (!usrinput_header_data.empty() && !exclude_first_line) cmdout_tab_data[0] = usrinput_header_data;
+    if (!usrinput_header_data.empty() && !exclude_first_line) {
+        cmdout_tab_data[0] = usrinput_header_data;
+
+        // Cleanup the memory
+        usrinput_header_data.clear();
+    }
 
     // Finds the row with the most columns to standardize layout
-    for (const auto& tab_row : cmdout_tab_data) {
-        max_col_count = max(max_col_count, tab_row.size());
-    }
+    for (const auto &tab_row : cmdout_tab_data) max_col_count = max(max_col_count, tab_row.size());
 
     // Resize column width vector based on max column count
     tab_col_width.resize(max_col_count, 0);
@@ -1141,10 +1157,8 @@ int main(
     // --------------------------------------------------
 
     // Iterates through all cells to calculate the maximum width needed per column
-    for (const auto& tab_row : cmdout_tab_data) {
-        for (size_t index = 0; index < tab_row.size(); ++index) {
-            tab_col_width[index] = max(tab_col_width[index], tab_row[index].length());
-        }
+    for (const auto &tab_row : cmdout_tab_data) {
+        for (size_t index = 0; index < tab_row.size(); ++index) tab_col_width[index] = max(tab_col_width[index], tab_row[index].length());
     }
 
     // Add padding to each column width for spacing
@@ -1154,7 +1168,7 @@ int main(
     // Render Output Table
     // --------------------------------------------------
 
-    for (const auto& tab_row : cmdout_tab_data) {
+    for (const auto &tab_row : cmdout_tab_data) {
         // Render top border if it's the first line and table borders are enabled
         if (first_line && use_border) cout << get_tab_border(
             max_col_count, 
@@ -1206,6 +1220,18 @@ int main(
         first_line = false;
     }
 
+    // Cleanup the memory
+    if (!header_text_color.empty()) header_text_color;
+    if (!body_text_color.empty()) body_text_color;
+    if (!header_bg_color.empty()) header_bg_color;
+    if (!body_bg_color.empty()) body_bg_color;
+    if (!header_text_style.empty()) header_text_style;
+    if (!body_text_style.empty()) body_text_style;
+    if (!header_text_align.empty()) header_text_align;
+    if (!body_text_align.empty()) body_text_align;
+
+    cmdout_tab_data.clear();
+
     // Render bottom border of the table if enabled
     if (use_border) cout << get_tab_border(
         max_col_count, 
@@ -1217,13 +1243,9 @@ int main(
         table_color
     );
 
-    // --------------------------------------------------
-    // Memory Cleanup
-    // --------------------------------------------------
+    // Cleanup the memory
+    if (!table_color.empty()) table_color.clear();
 
-    // Clear buffers and temporary data after rendering
-    cmdout_tab_data.clear();
-    temp_row_data.clear();
     tab_col_width.clear();
 
     // Exit successfully
