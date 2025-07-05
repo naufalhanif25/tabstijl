@@ -51,7 +51,7 @@ fi
 if [ "$OPS" == "update" ]; then
     echo -e "$NAME $VERSION already installed in $DEF_PATH"
 
-    PREFIX=$'\u2514\u2500 '
+    PREFIX=$"\u2514\u2500 "
 else
     PREFIX=""
 fi
@@ -90,7 +90,8 @@ if [[ "$INPUT" =~ ^[yY]$ ]]; then
     # Copy the binary to the path
     echo -e "$(echo -e "\u2514\u2500") Copying the $NAME $VERSION binary..."
 
-    sudo cp "$BIN_NAME" "$IN_PATH/$BIN_NAME"
+    sudo chmod +x "$BIN_NAME"
+    sudo cp -p "$BIN_NAME" "$IN_PATH/$BIN_NAME"
     sleep 1
     
     # Make the binary executable
@@ -100,9 +101,9 @@ if [[ "$INPUT" =~ ^[yY]$ ]]; then
     sleep 1
 
     # Show success message
-    echo -e "\n$NAME $VERSION $VERSION successfully ${OPSED}!"
+    echo -e "\n$NAME $VERSION successfully ${OPSED}!"
     echo -e "\nYou can type '$BIN_NAME -v' or '$BIN_NAME --version' to check the version."
-    echo -e "See the GitHub page at <https://github.com/naufalhanif25/TabStijl.git>"
+    echo -e "See the GitHub page at <https://github.com/naufalhanif25/tabstijl.git>"
     
     exit 0
 else
